@@ -1,0 +1,70 @@
+---
+- name: Disable root login
+  lineinfile: 
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh
+
+- name: Disable password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh
+
+- name: Disable empty passwords
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?PermitEmptyPasswords"
+    line: "PermitEmptyPasswords no"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh
+
+- name: Forced public key authentification
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?PubkeyAuthentication"
+    line: "PubkeyAuthentication yes"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh
+
+- name: Change ssh port
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?Port"
+    line: "Port {{ ssh_port }}"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh
+
+- name: increase ssh session timeout
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#ClientAliveInterval"
+    line: "ClientAliveInterval 900          # 15 minutes"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh
+
+- name: increase ssh session timeout count
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#ClientAliveCountMax"
+    line: "ClientAliveCountMax 3            # 3 time"
+    state: present
+  notify: restart sshd
+  tags:
+   - ssh

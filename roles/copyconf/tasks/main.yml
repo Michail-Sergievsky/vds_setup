@@ -1,0 +1,33 @@
+---
+- name: save wg-conf
+  fetch:
+    src: /etc/wireguard/wg-internal.conf
+    # src: /etc/wireguard/wg-external.conf
+    dest: ~/Backup_system/wireguard/server-{{ inventory_hostname }}/
+    flat: yes
+  tags:
+   - copyconf
+
+- name: save update_script
+  fetch:
+    src: /root/update_exclude_routes.sh
+    dest: ~/Backup_system/wireguard/server-{{ inventory_hostname }}/
+    flat: yes
+  tags:
+   - copyconf
+
+- name: save subnets_user_list.txt
+  fetch:
+    src: /root/subnets_user_list.txt
+    dest: ~/Backup_system/wireguard/server-{{ inventory_hostname }}/
+    flat: yes
+  tags:
+   - copyconf
+
+- name: save crontab from root
+  fetch:
+    src: /var/spool/cron/crontabs/root
+    dest: ~/Backup_system/wireguard/server-{{ inventory_hostname }}/
+    flat: yes
+  tags:
+   - copyconf

@@ -1,0 +1,30 @@
+---
+# - name: Unminimize Ubuntu
+#   shell: yes | unminimize
+#   tags:
+#    - system_update_ubuntu
+
+- name: Upgrade packages
+  apt:
+    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 300
+  tags:
+   - system_update_ubuntu
+
+- name: Install packages
+  apt:
+    name:
+      - cron
+      - curl
+      - dnsutils
+      - git
+      - less
+      - net-tools
+      - nmap
+      - ufw
+      - vim
+    state: present
+    update_cache: yes
+  tags:
+   - system_update_ubuntu

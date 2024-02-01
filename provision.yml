@@ -1,0 +1,11 @@
+---
+- hosts: all
+  # user: root
+  become: yes
+  roles:
+   - copyconf
+   - hostname
+   - ssh
+   - system_update_ubuntu
+   - ufw
+   - user

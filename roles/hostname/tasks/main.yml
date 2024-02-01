@@ -1,0 +1,12 @@
+- name: set hostname
+  hostname: name={{ ansible_host }}
+  # notify:
+  #  - restart network
+  tags:
+   - hostname
+
+- name: create the hosts file
+  template: src=etc/hosts dest=/etc/hosts
+  tags:
+   - hostname
+

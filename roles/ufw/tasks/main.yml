@@ -1,0 +1,21 @@
+---
+- name: Enable firewall
+  ufw: state=enabled policy=deny
+  tags:
+    - ufw
+
+ # - name: Allow HTTP
+ #   ufw: rule=allow port=80 proto=tcp
+ #   tags:
+ #     - ufw
+
+ # - name: Allow HTTPS
+ #   ufw: rule=allow port=443 proto=tcp
+ #   tags:
+ #     - ufw
+
+# change port to custom
+- name: Allow SSH
+  ufw: rule=allow port={{ ssh_port }} proto=tcp
+  tags:
+    - ufw

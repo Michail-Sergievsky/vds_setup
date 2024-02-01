@@ -1,0 +1,78 @@
+---
+- name: Ensure sudo group is present
+  group:
+    name: sudo
+    state: present
+  tags:
+   - user
+
+- name: sudo group has sudo privileges, with no pass
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL:ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+  tags:
+   - user
+
+- name: disable additional sudoers configs
+  lineinfile:
+    dest: /etc/sudoers
+    state: absent 
+    regexp: "^.includedir"
+    validate: "/usr/sbin/visudo -cf %s"
+  tags:
+   - user
+
+- name: Create a secondary, non-root user
+  user:
+    name: "{{ user_name }}"
+    groups: sudo
+    shell: /bin/bash
+  tags:
+   - user
+
+- name: Copy .bashrc to user
+  copy:
+    src: .bashrc
+    dest: "/home/{{ user_name }}/.bashrc"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: '0644'
+  tags:
+   - user
+
+- name: Create a .ssh directory with limited permission
+  ansible.builtin.file:
+    path: "/home/{{ user_name }}/.ssh"
+    state: directory
+    mode: '0700'
+
+- name: Add remote authorized key to allow future passwordless logins
+  authorized_key:
+    user: "{{ user_name }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+  tags:
+   - user
+
+- name: Disable sudo for admin group
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%admin"
+    line: "#%admin ALL=(ALL) ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+  tags:
+   - user
+
+- name: disable root user completly
+  user:
+    name: root
+    shell: /sbin/nologin
+    create_home: no
+    append: yes
+    state: present
+  tags:
+   - user
